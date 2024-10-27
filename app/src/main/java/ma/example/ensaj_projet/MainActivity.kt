@@ -1,35 +1,40 @@
 package ma.example.ensaj_projet
 
-import android.app.AlarmManager
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
-import ma.example.ensaj_projet.R
-import ma.example.ensaj_projet.adapter.ReminderAdapter
-import ma.example.ensaj_projet.beans.Reminder
-import java.util.Calendar
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import ma.example.ensaj_projet.adapter.ReminderAdapter
+import ma.example.ensaj_projet.beans.Reminder
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -37,15 +42,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var reminderAdapter: ReminderAdapter
     private val reminders = mutableListOf<Reminder>()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Reminders"
+        val toolbarTitle = toolbar.getChildAt(0) as TextView
+        toolbarTitle.setTypeface(toolbarTitle.typeface, Typeface.BOLD)
+        val overflowIcon = toolbar.getOverflowIcon()
+        overflowIcon?.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP)
 
         reminderRecyclerView = findViewById(R.id.recyclerView)
         reminderRecyclerView.layoutManager = LinearLayoutManager(this)
 
         reminderAdapter = ReminderAdapter(reminders) { position ->
-            // Define what happens when an item is swiped
+
             showDeleteConfirmationDialog(position)
         }
 
@@ -59,12 +72,12 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Delete Reminder")
             .setMessage("Are you sure you want to delete this reminder?")
             .setPositiveButton("Yes") { _, _ ->
-                reminderAdapter.removeItem(position) // Remove item from adapter
+                reminderAdapter.removeItem(position)
                 Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss() // Dismiss the dialog
-                reminderAdapter.notifyItemChanged(position) // Notify the adapter to refresh the item
+                dialog.dismiss()
+                reminderAdapter.notifyItemChanged(position)
             }
             .show()
     }
@@ -73,15 +86,15 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED) {
-                // Permission already granted
+
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                // Show rationale for permission
+
             } else {
-                // Request permission
+
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            // Older Android versions
+
             fetchFCMToken()
         }
     }
@@ -142,13 +155,11 @@ class MainActivity : AppCompatActivity() {
                 val description = descriptionInput.text.toString()
                 val timeInMillis = calendar.timeInMillis
 
-                // Check if the time is in the future
                 if (timeInMillis <= System.currentTimeMillis()) {
                     Toast.makeText(this, "Please select a future date and time.", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
-                // Schedule the work
                 val data = Data.Builder()
                     .putString("TITLE", title)
                     .putString("MESSAGE", description)
@@ -161,27 +172,65 @@ class MainActivity : AppCompatActivity() {
 
                 WorkManager.getInstance(this).enqueue(workRequest)
 
-                // Add reminder to the list and update RecyclerView
                 val reminder = Reminder(reminders.size, title, description, timeInMillis)
                 reminders.add(reminder)
-                reminderAdapter.notifyItemInserted(reminders.size - 1)
-                reminderRecyclerView.scrollToPosition(reminders.size - 1) // Scroll to the new item
 
-                // Show toast
+                reminderAdapter.updateList(reminders)
+                reminderRecyclerView.scrollToPosition(reminders.size - 1)
+
                 Toast.makeText(this, "Reminder added: $title", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    fun scheduleNotification(reminder: Reminder) {
-        val intent = Intent(this, MyFirebaseMessagingService::class.java)
-        intent.putExtra("title", reminder.title)
-        intent.putExtra("message", reminder.description)
 
-        val pendingIntent = PendingIntent.getBroadcast(this, reminder.id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        val menuItem = menu.findItem(R.id.app_bar_search)
+        val searchView = MenuItemCompat.getActionView(menuItem) as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
 
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminder.timeInMillis, pendingIntent)
+            override fun onQueryTextChange(newText: String): Boolean {
+                filterList(newText)
+                return true
+            }
+        })
+        return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.share) {
+            val txt = "Check out my great Reminders app!"
+            val mimeType = "text/plain"
+            ShareCompat.IntentBuilder
+                .from(this)
+                .setType(mimeType)
+                .setChooserTitle("Share this app via:")
+                .setText(txt)
+                .startChooser()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    private fun filterList(query: String) {
+        val filteredReminderList = if (query.isEmpty()) {
+            reminders
+        } else {
+            val lowerCaseQuery = query.lowercase().trim()
+            reminders.filter { reminder ->
+                reminder.title.lowercase().contains(lowerCaseQuery) ||
+                        reminder.description.lowercase().contains(lowerCaseQuery)
+            }
+        }
+
+        reminderAdapter.updateList(filteredReminderList)
+    }
+
+
+
 }

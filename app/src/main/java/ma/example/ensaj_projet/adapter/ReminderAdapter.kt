@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ma.example.ensaj_projet.R
@@ -14,8 +16,12 @@ import java.util.Locale
 
 class ReminderAdapter(
     private val reminders: MutableList<Reminder>,
-    private val onDeleteClick: (Int) -> Unit // Callback for deletion
+    private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder>() {
+
+
+    private val filteredReminders = mutableListOf<Reminder>().apply { addAll(reminders) }
+
 
     class ReminderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.reminderTitle)
@@ -29,13 +35,11 @@ class ReminderAdapter(
             timeTextView.text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(reminder.timeInMillis))
             checkbox.isChecked = reminder.isChecked
 
-            // Handle checkbox click
             checkbox.setOnCheckedChangeListener { _, isChecked ->
-                reminder.isChecked = isChecked // Update the reminder's status
+                reminder.isChecked = isChecked
             }
         }
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.reminder_item, parent, false)
@@ -43,19 +47,25 @@ class ReminderAdapter(
     }
 
     override fun onBindViewHolder(holder: ReminderViewHolder, position: Int) {
-        val reminder = reminders[position]
+        val reminder = filteredReminders[position]
         holder.bind(reminder)
     }
 
-    override fun getItemCount() = reminders.size
+    override fun getItemCount() = filteredReminders.size
 
-    // New method to handle swipe action
     fun onItemSwiped(position: Int) {
-        onDeleteClick(position) // Call the deletion callback
+        onDeleteClick(position)
     }
 
     fun removeItem(position: Int) {
         reminders.removeAt(position)
+        filteredReminders.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+    fun updateList(newList: List<Reminder>) {
+        filteredReminders.clear()
+        filteredReminders.addAll(newList)
+        notifyDataSetChanged()
     }
 }

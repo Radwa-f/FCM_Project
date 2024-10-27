@@ -8,6 +8,25 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:cardElevation="10dp"
+        app:cardBackgroundColor="#130187"
+        app:cardCornerRadius="0dp"
+        android:outlineAmbientShadowColor="@color/black"> <!-- Set corner radius to 0 for sharp corners -->
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:titleTextColor="#FFFFFF"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:padding="5dp"/>
+    </androidx.cardview.widget.CardView>
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -26,14 +45,18 @@
             android:layout_height="wrap_content"
             android:text="Add Reminder"
             android:layout_marginHorizontal="10dp"
-            android:onClick="addReminder" />
+            android:onClick="addReminder"
+            android:backgroundTint="#130187"
+            android:textSize="20dp"/>
 
         <Button
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Allow user to get notifications"
+            android:text="Allow user "
             android:layout_marginHorizontal="10dp"
-            android:onClick="requestPermission" />
+            android:onClick="requestPermission"
+            android:backgroundTint="#4CAF50"
+            android:textSize="18dp"/>
     </LinearLayout>
 </LinearLayout>
