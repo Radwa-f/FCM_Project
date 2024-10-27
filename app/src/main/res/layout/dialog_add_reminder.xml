@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/reminderTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Reminder Title"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/reminderDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Reminder Description"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/reminderDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select Date"
+        android:padding="10dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/reminderTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select Time"
+        android:padding="10dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

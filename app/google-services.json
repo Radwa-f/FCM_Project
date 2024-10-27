@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "406599328218",
+    "project_id": "fcmproject-e0c40",
+    "storage_bucket": "fcmproject-e0c40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406599328218:android:dada5ab4ae0e9f6671e0e3",
+        "android_client_info": {
+          "package_name": "ma.ensaj_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKv3bGU-nCEGbAP76bKIc8E-eYFoB368"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406599328218:android:33544b81b341678971e0e3",
+        "android_client_info": {
+          "package_name": "ma.ensaj_projet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKv3bGU-nCEGbAP76bKIc8E-eYFoB368"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406599328218:android:aadc6ca214187d8771e0e3",
+        "android_client_info": {
+          "package_name": "ma.example.ensaj_projet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKv3bGU-nCEGbAP76bKIc8E-eYFoB368"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406599328218:android:92b9ca85590f127d71e0e3",
+        "android_client_info": {
+          "package_name": "ma.example.fcm_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKv3bGU-nCEGbAP76bKIc8E-eYFoB368"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406599328218:android:145921696c79feb671e0e3",
+        "android_client_info": {
+          "package_name": "ma.fcm_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKv3bGU-nCEGbAP76bKIc8E-eYFoB368"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
