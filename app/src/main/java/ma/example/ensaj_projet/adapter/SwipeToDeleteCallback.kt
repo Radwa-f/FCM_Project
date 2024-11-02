@@ -11,11 +11,11 @@ class SwipeToDeleteCallback(private val adapter: ReminderAdapter) : ItemTouchHel
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return false // We don't need to handle move events
+        return false
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        // Get the position of the item that was swiped
+
         val position = viewHolder.adapterPosition
         adapter.onItemSwiped(position)
     }
