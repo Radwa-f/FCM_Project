@@ -22,14 +22,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             showNotification(it.title, it.body)
         }
 
-        val notificationTitle = remoteMessage.notification?.title ?: "Reminder"
+        /*val notificationTitle = remoteMessage.notification?.title ?: "Reminder"
         val notificationBody = remoteMessage.notification?.body ?: "You have a reminder!"
 
-        showNotification(notificationTitle, notificationBody)
+        showNotification(notificationTitle, notificationBody)*/
 
     }
-
-
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -38,7 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun showNotification(title: String?, message: String?) {
-        val builder = NotificationCompat.Builder(this, "reminders_channel")
+        val builder = NotificationCompat.Builder(this, "FCM_channel")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
@@ -47,7 +45,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "reminders_channel",
+                "FCM_channel",
                 "FCM Notifications",
                 NotificationManager.IMPORTANCE_HIGH
             )

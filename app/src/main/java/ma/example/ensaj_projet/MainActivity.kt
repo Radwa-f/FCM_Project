@@ -43,6 +43,7 @@ import ma.example.ensaj_projet.adapter.ReminderAdapter
 import ma.example.ensaj_projet.beans.Reminder
 import okhttp3.*
 import java.util.Calendar
+import com.google.firebase.Timestamp
 
 class MainActivity : AppCompatActivity() {
     private lateinit var reminderRecyclerView: RecyclerView
@@ -156,12 +157,13 @@ class MainActivity : AppCompatActivity() {
             reminderAdapter.updateList(reminders)
             reminderRecyclerView.scrollToPosition(reminders.size - 1)
             Toast.makeText(this, "Reminder added: $title", Toast.LENGTH_SHORT).show()
+            val reminderTimestamp = Timestamp(timeInMillis / 1000, 0)
 
             val reminderData = hashMapOf(
                 "id" to reminderId,
                 "title" to title,
                 "description" to description,
-                "time" to timeInMillis,
+                "time" to reminderTimestamp,
                 "userToken" to fcmToken
             )
 
@@ -188,8 +190,18 @@ class MainActivity : AppCompatActivity() {
                 reminders.clear()
                 for (document in documents) {
                     Log.d("Firestore", "Document: ${document.id} => ${document.data}")
-                    val reminder = document.toObject(Reminder::class.java)
+                    val id = document.getLong("id")?.toInt() ?: continue
+                    val title = document.getString("title") ?: ""
+                    val description = document.getString("description") ?: ""
+
+                    // Convert the Firestore Timestamp to milliseconds
+                    val timeTimestamp = document.getTimestamp("time")
+                    val timeInMillis = timeTimestamp?.toDate()?.time ?: 0L
+
+                    val reminder = Reminder(id, title, description, timeInMillis)
                     reminders.add(reminder)
+                    //val reminder = document.toObject(Reminder::class.java)
+                    //reminders.add(reminder)
                 }
                 reminderAdapter.updateList(reminders)
             }
